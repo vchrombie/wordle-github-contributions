@@ -1,9 +1,9 @@
 # wordle-github-contributions
-Tweets your monthly GitHub Contributions as Wordle boxes
+Tweets your monthly GitHub Contributions as Wordle grid
 
 ### with tweepy support
 ```yml
-name: Share your GitHub Contributions Chart as Wordle Grid on Twitter
+name: Wordle GitHub Contributions
 
 on:
   schedule:
@@ -11,15 +11,17 @@ on:
     - cron: "0 8 1 * *"
 
 jobs:
-  contribution-chart:
+  tweet-contribution-chart:
     runs-on: ubuntu-latest
     steps:
-      - name: Generate the contribution wordle chart
-        uses: vchrombie/wordle-github-contributions@master
-        with:
+      - uses: actions/checkout@v2
+      - uses: vchrombie/wordle-github-contributions@master
+        env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TWITTER_CONSUMER_KEY: ${{ secrets.TWITTER_CONSUMER_KEY }}
           TWITTER_CONSUMER_SECRET: ${{ secrets.TWITTER_CONSUMER_SECRET }}
           TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
           TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
 ```
+
+

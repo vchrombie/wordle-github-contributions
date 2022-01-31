@@ -42,7 +42,7 @@ to_date = datetime.now().replace(day=1).replace(hour=0, minute=0, second=0, micr
 from_date = (to_date - timedelta(days=1)).replace(day=1).replace(hour=0, minute=0, second=0, microsecond=0)
 
 VARIABLES = {
-    "username": os.environ["GH_USERNAME"],
+    "username": os.environ["INPUT_GH_USERNAME"],
     "from_date": from_date.isoformat(),
     "to_date": to_date.isoformat(),
 }
@@ -93,7 +93,7 @@ tweet += '\n\n#wordle #github'
 print(f"::set-output name=tweet::{tweet}")
 
 
-if os.environ["TWEET_FLAG"] == 'True':
+if os.environ["INPUT_TWEET_FLAG"] == 'True':
     # twitter keys
     consumer_key = os.environ["TWITTER_CONSUMER_KEY"]
     consumer_secret = os.environ["TWITTER_CONSUMER_SECRET"]

@@ -1,0 +1,25 @@
+name: wordle-github-contributions
+description: Tweets your monthly GitHub Contributions as Wordle boxes
+author: vchrombie
+
+inputs:
+  GH_USERNAME:
+    required: false
+    default: ${{ github.repository_owner }}
+    description: 'Your GitHub Username'
+  TWEET_FLAG:
+    required: false
+    default: 'True'
+    description: 'Tweet flag to send a tweet'
+
+outputs:
+  tweet:
+    description: "Tweet content"
+
+branding:
+  icon: grid
+  color: yellow
+
+runs:
+  using: "docker"
+  image: "Dockerfile"

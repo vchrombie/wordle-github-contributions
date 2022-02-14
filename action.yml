@@ -1,5 +1,5 @@
 name: wordle-github-contributions
-description: Tweets your monthly GitHub Contributions as Wordle boxes
+description: Tweets your monthly GitHub Contributions as Wordle grid
 author: vchrombie
 
 inputs:

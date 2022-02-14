@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "wordle-github-contributions-tweet"
 version = "0.1.0"
-description = ""
+description = "Tweets your monthly GitHub Contributions as Wordle grid"
 authors = [
     "Venu Vardhan Reddy Tekula <venuvardhanreddytekula8@gmail.com>"
 ]

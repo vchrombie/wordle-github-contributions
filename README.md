@@ -39,9 +39,10 @@ It fetches your contribution data of the last month, generates the wordle grid a
 
 ### Override defaults
 
-| Input Param | Default Value | Description |
-|--------|--------|--------|
-| `TWEET_FLAG` | True | Flag variable to use the in-built tweepy library to tweet the wordle grid |
+| Input Param  | Default Value | Description                                                               |
+|--------------|---------------|---------------------------------------------------------------------------|
+| `TWEET_FLAG` | True          | Flag variable to use the in-built tweepy library to tweet the wordle grid |
+| `HASHTAGS`   | wordle github | Custom hashtags to add in the tweet                                       |
 
 If you decide not to tweet it, you can set the `TWEET_FLAG` variable to `False`. You need not provide the Twitter API keys, tokens in that case.
 
@@ -56,6 +57,13 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           TWEET_FLAG: False
+```
+
+You can add custom hashtags for the tweet. Since github actions doesn't support the input of an array/list, we need add them as a string.
+
+```yaml
+        with:
+          HASHTAGS: 'wordle github contributions'
 ```
 
 ### Use other actions for sending the tweet

@@ -11,6 +11,10 @@ inputs:
     required: false
     default: 'True'
     description: 'Tweet flag to send a tweet'
+  HASHTAGS:
+    required: false
+    default: 'wordle github'
+    description: 'Custom Hashtags'
 
 outputs:
   tweet:

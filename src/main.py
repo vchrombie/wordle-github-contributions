@@ -10,6 +10,7 @@ EMPTY_CHARS = '     '
 
 GH_USERNAME = os.environ["INPUT_GH_USERNAME"]
 TWEET_FLAG = os.environ["INPUT_TWEET_FLAG"]
+HASHTAGS_STRING = os.environ["INPUT_HASHTAGS"]
 
 
 def calculate_time_period():
@@ -72,6 +73,17 @@ def generate_wordle_grid(streak_matrix):
     return grid
 
 
+def extract_hashtags(hashtags_string):
+    """
+    Split the string of hashtags into a list of hashtags
+
+    :param hashtags_string: hashtags as a single string
+    :return: list of hashtags
+    """
+    hashtags = hashtags_string.split()
+    return hashtags
+
+
 def main():
     """
     Tweets your monthly GitHub Contributions as Wordle grid
@@ -86,7 +98,12 @@ def main():
 
     tweet = '\n{} {}\n'.format(months_data[0]['name'], months_data[0]['year'])
     tweet += generate_wordle_grid(streak_matrix)
-    tweet += '\n\n#wordle #github'
+    tweet += '\n\n'
+
+    hashtags = extract_hashtags(HASHTAGS_STRING)
+    for hashtag in hashtags:
+        tweet += '#{} '.format(hashtag)
+    tweet += '\n'
 
     print(f"::set-output name=tweet::{tweet}")
 

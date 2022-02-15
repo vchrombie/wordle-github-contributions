@@ -11,7 +11,7 @@ Tweets your monthly GitHub Contributions as Wordle grid
 Create a workflow file in any of your repository ([example](https://github.com/vchrombie/vchrombie/blob/master/.github/workflows/wordle-github.yml))
 
 `.github/workflows/tweet-wordle-github.yml`
-```yml
+```yaml
 name: Wordle GitHub Contributions
 
 on:
@@ -37,16 +37,18 @@ The above job runs at 0800 UTC, on the 1st of every month. You can change it as 
 
 It fetches your contribution data of the last month, generates the wordle grid and tweets it.
 
-### Override defaults
+## Override defaults
 
 | Input Param  | Default Value | Description                                                               |
 |--------------|---------------|---------------------------------------------------------------------------|
 | `TWEET_FLAG` | True          | Flag variable to use the in-built tweepy library to tweet the wordle grid |
 | `HASHTAGS`   | wordle github | Custom hashtags to add in the tweet                                       |
 
+### `TWEET_FLAG`
+
 If you decide not to tweet it, you can set the `TWEET_FLAG` variable to `False`. You need not provide the Twitter API keys, tokens in that case.
 
-```yml
+```yaml
 jobs:
   contribution-grid:
     runs-on: ubuntu-latest
@@ -59,18 +61,11 @@ jobs:
           TWEET_FLAG: False
 ```
 
-You can add custom hashtags for the tweet. Since github actions doesn't support the input of an array/list, we need add them as a string.
-
-```yaml
-        with:
-          HASHTAGS: 'wordle github contributions'
-```
-
-### Use other actions for sending the tweet
+#### Use other actions for sending the tweet
 
 The tweet content is stored in the workflow output variable `tweet`. You can combine this worflow to send a tweet using different github actions like [ethomson/send-tweet-action](https://github.com/ethomson/send-tweet-action).
 
-```yml
+```yaml
 jobs:
   contribution-grid:
     runs-on: ubuntu-latest
@@ -96,3 +91,31 @@ jobs:
           access-token: ${{ secrets.TWITTER_ACCESS_TOKEN }}
           access-token-secret: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
 ```
+
+### `HASHTAGS`
+
+You can add custom hashtags for the tweet. Since github actions doesn't support the input of an array/list, we need add them as a string.
+
+```yaml
+      - uses: vchrombie/wordle-github-contributions@master
+        with:
+          HASHTAGS: 'wordle github contributions'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+You can also parse the hashtags in multiple lines
+```yaml
+      - uses: vchrombie/wordle-github-contributions@master
+        with:
+          HASHTAGS: |
+            wordle
+            github
+            contributions
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+---
+
+Made out of boredom on a Sunday evening.

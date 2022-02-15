@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: vchrombie/wordle-github-contributions@master
+      - uses: vchrombie/wordle-github-contributions@v0.2.0
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TWITTER_CONSUMER_KEY: ${{ secrets.TWITTER_CONSUMER_KEY }}

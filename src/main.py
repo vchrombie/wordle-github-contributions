@@ -2,15 +2,17 @@ import os
 from datetime import datetime, timedelta
 
 from github import GitHubContributionsData
-from twitter import TweetContent
 
 GREEN_SQUARE = '🟩'
 BLACK_SQUARE = '⬛'
 EMPTY_CHARS = '     '
 
 GH_USERNAME = os.environ["INPUT_GH_USERNAME"]
-TWEET_FLAG = os.environ["INPUT_TWEET_FLAG"]
-HASHTAGS_STRING = os.environ["INPUT_HASHTAGS"]
+TITLE = os.environ["INPUT_TITLE"]
+SHOW_MONTH = os.environ["INPUT_SHOW_MONTH"]
+OUTPUT_FILE = os.environ["INPUT_OUTPUT_FILE"]
+MARKER_START = os.environ["INPUT_MARKER_START"]
+MARKER_END = os.environ["INPUT_MARKER_END"]
 
 
 def calculate_time_period():
@@ -73,20 +75,68 @@ def generate_wordle_grid(streak_matrix):
     return grid
 
 
-def extract_hashtags(hashtags_string):
+def build_markdown(title, month_label, grid, show_month):
     """
-    Split the string of hashtags into a list of hashtags
+    Build markdown for the wordle grid
 
-    :param hashtags_string: hashtags as a single string
-    :return: list of hashtags
+    :param title: heading text
+    :param month_label: month and year label
+    :param grid: generated wordle grid
+    :param show_month: flag for rendering the month label
+    :return: markdown string
     """
-    hashtags = hashtags_string.split()
-    return hashtags
+    parts = []
+    if title:
+        parts.append(f"### {title}")
+    if show_month == 'True' and month_label:
+        parts.append(f"#### {month_label}")
+    parts.append("<pre>")
+    parts.append(grid.strip("\n"))
+    parts.append("</pre>")
+    return "\n".join(parts)
+
+
+def set_github_output(name, value):
+    """
+    Write output to GitHub Actions output file when available
+    """
+    output_path = os.environ.get("GITHUB_OUTPUT")
+    if output_path:
+        with open(output_path, "a", encoding="utf-8") as handle:
+            handle.write(f"{name}<<EOF\n{value}\nEOF\n")
+    else:
+        print(f"::set-output name={name}::{value}")
+
+
+def update_file_contents(output_file, marker_start, marker_end, content):
+    """
+    Replace content between markers in the output file
+    """
+    if not output_file:
+        return
+
+    if not os.path.exists(output_file):
+        raise FileNotFoundError(f"Output file not found: {output_file}")
+
+    with open(output_file, "r", encoding="utf-8") as handle:
+        data = handle.read()
+
+    start_index = data.find(marker_start)
+    end_index = data.find(marker_end)
+
+    if start_index == -1 or end_index == -1 or end_index < start_index:
+        raise ValueError("Markers not found or out of order in output file")
+
+    start_index += len(marker_start)
+    new_data = data[:start_index] + "\n" + content + "\n" + data[end_index:]
+
+    with open(output_file, "w", encoding="utf-8") as handle:
+        handle.write(new_data)
 
 
 def main():
     """
-    Tweets your monthly GitHub Contributions as Wordle grid
+    Generates your monthly GitHub Contributions as a Wordle grid
     """
 
     from_date, to_date = calculate_time_period()
@@ -96,19 +146,12 @@ def main():
 
     streak_matrix = generate_streak_matrix(weeks_data)
 
-    tweet = '\n{} {}\n'.format(months_data[0]['name'], months_data[0]['year'])
-    tweet += generate_wordle_grid(streak_matrix)
-    tweet += '\n\n'
+    month_label = '{} {}'.format(months_data[0]['name'], months_data[0]['year'])
+    grid = generate_wordle_grid(streak_matrix)
+    content = build_markdown(TITLE, month_label, grid, SHOW_MONTH)
 
-    hashtags = extract_hashtags(HASHTAGS_STRING)
-    for hashtag in hashtags:
-        tweet += '#{} '.format(hashtag)
-    tweet += '\n'
-
-    print(f"::set-output name=tweet::{tweet}")
-
-    if TWEET_FLAG == 'True':
-        TweetContent().send_tweet(content=tweet)
+    set_github_output("content", content)
+    update_file_contents(OUTPUT_FILE, MARKER_START, MARKER_END, content)
 
 
 if __name__ == '__main__':

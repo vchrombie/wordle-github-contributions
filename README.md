@@ -1,16 +1,21 @@
 # wordle-github-contributions
 
-Tweets your monthly GitHub Contributions as Wordle grid
-
-![tweet](https://user-images.githubusercontent.com/25265451/153467247-3e996b0b-29bf-44db-8a6e-e8f26ad6959f.png)
+Generates your monthly GitHub Contributions as a Wordle-style grid and can update a README section automatically.
 
 ---
 
-## Instructions
+## Usage
 
-Create a workflow file in any of your repository ([example](https://github.com/vchrombie/vchrombie/blob/master/.github/workflows/wordle-github.yml))
+Add the markers to the README you want to update (for example `vchrombie/vchrombie/README.md`):
 
-`.github/workflows/tweet-wordle-github.yml`
+```md
+<!-- wordle-github:start -->
+<!-- wordle-github:end -->
+```
+
+Create a workflow file in that repository:
+
+`.github/workflows/wordle-github.yml`
 ```yaml
 name: Wordle GitHub Contributions
 
@@ -18,102 +23,48 @@ on:
   schedule:
     # at 08:00 on the 1st of every month
     - cron: "0 8 1 * *"
+  workflow_dispatch:
 
 jobs:
-  tweet-contribution-grid:
+  update-contribution-grid:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: vchrombie/wordle-github-contributions@v0.2.0
+      - uses: actions/checkout@v4
+      - uses: vchrombie/wordle-github-contributions@main
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TWITTER_CONSUMER_KEY: ${{ secrets.TWITTER_CONSUMER_KEY }}
-          TWITTER_CONSUMER_SECRET: ${{ secrets.TWITTER_CONSUMER_SECRET }}
-          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
-          TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+        with:
+          OUTPUT_FILE: README.md
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update Wordle contributions"
 ```
 
-The above job runs at 0800 UTC, on the 1st of every month. You can change it as you wish based on the [cron syntax](https://jasonet.co/posts/scheduled-actions/#the-cron-syntax). 
+The above job runs at 08:00 UTC, on the 1st of every month. You can change it as you wish based on the cron syntax.
 
-It fetches your contribution data of the last month, generates the wordle grid and tweets it.
+It fetches your contribution data of the last month, generates the Wordle grid and updates the README content between the markers.
 
-## Override defaults
+## Inputs
 
-| Input Param  | Default Value | Description                                                               |
-|--------------|---------------|---------------------------------------------------------------------------|
-| `TWEET_FLAG` | True          | Flag variable to use the in-built tweepy library to tweet the wordle grid |
-| `HASHTAGS`   | wordle github | Custom hashtags to add in the tweet                                       |
+| Input Param     | Default Value                  | Description                                        |
+|----------------|--------------------------------|----------------------------------------------------|
+| `GH_USERNAME`  | repository owner               | GitHub username whose contributions to fetch       |
+| `TITLE`        | GitHub Contributions Wordle    | Heading text to include in the output              |
+| `SHOW_MONTH`   | True                           | Include the month label in the output              |
+| `OUTPUT_FILE`  | (empty)                        | Optional file path to update (e.g. `README.md`)    |
+| `MARKER_START` | <!-- wordle-github:start -->   | Start marker used when updating `OUTPUT_FILE`      |
+| `MARKER_END`   | <!-- wordle-github:end -->     | End marker used when updating `OUTPUT_FILE`        |
 
-### `TWEET_FLAG`
+## Outputs
 
-If you decide not to tweet it, you can set the `TWEET_FLAG` variable to `False`. You need not provide the Twitter API keys, tokens in that case.
-
-```yaml
-jobs:
-  contribution-grid:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: vchrombie/wordle-github-contributions@master
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          TWEET_FLAG: False
-```
-
-#### Use other actions for sending the tweet
-
-The tweet content is stored in the workflow output variable `tweet`. You can combine this worflow to send a tweet using different github actions like [ethomson/send-tweet-action](https://github.com/ethomson/send-tweet-action).
+The action exposes the markdown in the `content` output if you want to use it in another step.
 
 ```yaml
-jobs:
-  contribution-grid:
-    runs-on: ubuntu-latest
-    outputs:
-      tweet: ${{ steps.generate_tweet.outputs.tweet }}
-    steps:
-      - uses: actions/checkout@v2
-      - uses: vchrombie/wordle-github-contributions@master
-        id: generate_tweet
+      - uses: vchrombie/wordle-github-contributions@main
+        id: wordle
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          TWEET_FLAG: False
-  tweet:
-    runs-on: ubuntu-latest
-    needs: contribution-grid
-    steps:
-      - uses: ethomson/send-tweet-action@v1
-        with:
-          status: ${{ needs.contribution-grid.outputs.tweet }}
-          consumer-key: ${{ secrets.TWITTER_CONSUMER_API_KEY }}
-          consumer-secret: ${{ secrets.TWITTER_CONSUMER_API_SECRET }}
-          access-token: ${{ secrets.TWITTER_ACCESS_TOKEN }}
-          access-token-secret: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
-```
-
-### `HASHTAGS`
-
-You can add custom hashtags for the tweet. Since github actions doesn't support the input of an array/list, we need add them as a string.
-
-```yaml
-      - uses: vchrombie/wordle-github-contributions@master
-        with:
-          HASHTAGS: 'wordle github contributions'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-```
-
-You can also parse the hashtags in multiple lines
-```yaml
-      - uses: vchrombie/wordle-github-contributions@master
-        with:
-          HASHTAGS: |
-            wordle
-            github
-            contributions
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: echo "${{ steps.wordle.outputs.content }}"
 ```
 
 ---

@@ -1,5 +1,5 @@
 name: wordle-github-contributions
-description: Tweets your monthly GitHub Contributions as Wordle grid
+description: Generates a monthly GitHub Contributions Wordle grid
 author: vchrombie
 
 inputs:
@@ -7,18 +7,30 @@ inputs:
     required: false
     default: ${{ github.repository_owner }}
     description: 'Your GitHub Username'
-  TWEET_FLAG:
+  TITLE:
+    required: false
+    default: 'GitHub Contributions Wordle'
+    description: 'Heading text to include in the output'
+  SHOW_MONTH:
     required: false
     default: 'True'
-    description: 'Tweet flag to send a tweet'
-  HASHTAGS:
+    description: 'Include the month label in the output'
+  OUTPUT_FILE:
     required: false
-    default: 'wordle github'
-    description: 'Custom Hashtags'
+    default: ''
+    description: 'Optional file path to update (e.g. README.md)'
+  MARKER_START:
+    required: false
+    default: '<!-- wordle-github:start -->'
+    description: 'Start marker used when updating OUTPUT_FILE'
+  MARKER_END:
+    required: false
+    default: '<!-- wordle-github:end -->'
+    description: 'End marker used when updating OUTPUT_FILE'
 
 outputs:
-  tweet:
-    description: "Tweet content"
+  content:
+    description: "Markdown content for the Wordle grid"
 
 branding:
   icon: grid

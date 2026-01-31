@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "wordle-github-contributions-tweet"
+name = "wordle-github-contributions"
 version = "0.1.0"
-description = "Tweets your monthly GitHub Contributions as Wordle grid"
+description = "Generates your monthly GitHub Contributions as a Wordle grid"
 authors = [
     "Venu Vardhan Reddy Tekula <venuvardhanreddytekula8@gmail.com>"
 ]
@@ -9,7 +9,6 @@ authors = [
 [tool.poetry.dependencies]
 python = "^3.8"
 requests = "^2.27.1"
-tweepy = "^4.5.0"
 
 [tool.poetry.dev-dependencies]
 

@@ -6,27 +6,31 @@ inputs:
   GH_USERNAME:
     required: false
     default: ${{ github.repository_owner }}
-    description: 'Your GitHub Username'
+    description: "Your GitHub Username"
   TITLE:
     required: false
-    default: 'GitHub Contributions Wordle'
-    description: 'Heading text to include in the output'
+    default: "GitHub Contributions Wordle"
+    description: "Heading text to include in the output"
   SHOW_MONTH:
     required: false
-    default: 'True'
-    description: 'Include the month label in the output'
+    default: "True"
+    description: "Include the month label in the output"
   OUTPUT_FILE:
     required: false
-    default: ''
-    description: 'Optional file path to update (e.g. README.md)'
+    default: "README.md"
+    description: "Optional file path to update (e.g. README.md)"
   MARKER_START:
     required: false
-    default: '<!-- wordle-github:start -->'
-    description: 'Start marker used when updating OUTPUT_FILE'
+    default: "<!-- wordle-github:start -->"
+    description: "Start marker used when updating OUTPUT_FILE"
   MARKER_END:
     required: false
-    default: '<!-- wordle-github:end -->'
-    description: 'End marker used when updating OUTPUT_FILE'
+    default: "<!-- wordle-github:end -->"
+    description: "End marker used when updating OUTPUT_FILE"
+  SVG_FILE:
+    required: false
+    default: "wordle-github-contributions.svg"
+    description: "Optional file path to save the SVG image"
 
 outputs:
   content:

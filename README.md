@@ -2,6 +2,10 @@
 
 Generates your monthly GitHub Contributions as a Wordle-style grid and can update a README section automatically.
 
+Made out of boredom on a Sunday evening.
+
+![](preview.png)
+
 ---
 
 ## Usage
@@ -69,10 +73,6 @@ The action exposes the markdown in the `content` output if you want to use it in
 - run: echo "${{ steps.wordle.outputs.content }}"
 ```
 
----
-
-Made out of boredom on a Sunday evening.
-
 ## Environment Variables
 
 | Variable   | Required | Description                         |
@@ -80,3 +80,7 @@ Made out of boredom on a Sunday evening.
 | `GH_TOKEN` | Yes      | GitHub token for GraphQL API access |
 
 For local runs, you can copy `.env.example` to `.env` and fill in values.
+
+## License
+
+MIT License. See [`LICENSE`](LICENSE) file for details.

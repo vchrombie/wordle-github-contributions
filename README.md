@@ -16,6 +16,7 @@ Add the markers to the README you want to update (for example `vchrombie/vchromb
 Create a workflow file in that repository:
 
 `.github/workflows/wordle-github.yml`
+
 ```yaml
 name: Wordle GitHub Contributions
 
@@ -46,27 +47,36 @@ It fetches your contribution data of the last month, generates the Wordle grid a
 
 ## Inputs
 
-| Input Param     | Default Value                  | Description                                        |
-|----------------|--------------------------------|----------------------------------------------------|
-| `GH_USERNAME`  | repository owner               | GitHub username whose contributions to fetch       |
-| `TITLE`        | GitHub Contributions Wordle    | Heading text to include in the output              |
-| `SHOW_MONTH`   | True                           | Include the month label in the output              |
-| `OUTPUT_FILE`  | (empty)                        | Optional file path to update (e.g. `README.md`)    |
-| `MARKER_START` | <!-- wordle-github:start -->   | Start marker used when updating `OUTPUT_FILE`      |
-| `MARKER_END`   | <!-- wordle-github:end -->     | End marker used when updating `OUTPUT_FILE`        |
+| Input Param    | Default Value                   | Description                                     |
+| -------------- | ------------------------------- | ----------------------------------------------- |
+| `GH_USERNAME`  | repository owner                | GitHub username whose contributions to fetch    |
+| `TITLE`        | GitHub Contributions Wordle     | Heading text to include in the output           |
+| `SHOW_MONTH`   | True                            | Include the month label in the output           |
+| `OUTPUT_FILE`  | (empty)                         | Optional file path to update (e.g. `README.md`) |
+| `MARKER_START` | <!-- wordle-github:start -->    | Start marker used when updating `OUTPUT_FILE`   |
+| `MARKER_END`   | <!-- wordle-github:end -->      | End marker used when updating `OUTPUT_FILE`     |
+| `SVG_FILE`     | wordle-github-contributions.svg | Optional file path to save the SVG image        |
 
 ## Outputs
 
 The action exposes the markdown in the `content` output if you want to use it in another step.
 
 ```yaml
-      - uses: vchrombie/wordle-github-contributions@main
-        id: wordle
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: echo "${{ steps.wordle.outputs.content }}"
+- uses: vchrombie/wordle-github-contributions@main
+  id: wordle
+  env:
+    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+- run: echo "${{ steps.wordle.outputs.content }}"
 ```
 
 ---
 
 Made out of boredom on a Sunday evening.
+
+## Environment Variables
+
+| Variable   | Required | Description                         |
+| ---------- | -------- | ----------------------------------- |
+| `GH_TOKEN` | Yes      | GitHub token for GraphQL API access |
+
+For local runs, you can copy `.env.example` to `.env` and fill in values.

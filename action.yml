@@ -17,7 +17,7 @@ inputs:
     description: "Include the month label in the output"
   OUTPUT_FILE:
     required: false
-    default: "README.md"
+    default: ""
     description: "Optional file path to update (e.g. README.md)"
   MARKER_START:
     required: false

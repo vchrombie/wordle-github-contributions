@@ -6,13 +6,22 @@ from github import GitHubContributionsData
 
 load_dotenv()
 
-GH_USERNAME = os.getenv("INPUT_GH_USERNAME")
-TITLE = os.getenv("INPUT_TITLE")
-SHOW_MONTH = os.getenv("INPUT_SHOW_MONTH")
-OUTPUT_FILE = os.getenv("INPUT_OUTPUT_FILE")
-MARKER_START = os.getenv("INPUT_MARKER_START")
-MARKER_END = os.getenv("INPUT_MARKER_END")
-SVG_FILE = os.getenv("INPUT_SVG_FILE")
+
+def get_input(name):
+    """
+    Resolve inputs from GitHub Actions (INPUT_*) or plain env vars for local runs.
+    """
+    return os.getenv(f"INPUT_{name}", os.getenv(name))
+
+
+GH_USERNAME = get_input("GH_USERNAME")
+TITLE = get_input("TITLE")
+SHOW_MONTH = get_input("SHOW_MONTH")
+OUTPUT_FILE = get_input("OUTPUT_FILE")
+MARKER_START = get_input("MARKER_START")
+MARKER_END = get_input("MARKER_END")
+SVG_FILE = get_input("SVG_FILE")
+
 
 def calculate_time_period():
     """
